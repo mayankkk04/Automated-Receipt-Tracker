@@ -1,5 +1,5 @@
-# Automated-Receipt-Tracker
-## Project Overview
+# Automated-Receipt-Tracker using AWS
+### Project Overview
 
 This project provides an automated solution for processing receipts using Amazon Web Services (AWS). Traditional manual receipt handling is often time-consuming, prone to errors, and does not scale effectively.
 
@@ -31,7 +31,7 @@ Creating the S3 Bucket
 Click the Create bucket button to open the bucket creation wizard.
 Provide a unique and descriptive name for your bucket (e.g., your-project-receipts). This bucket will store all your receipt files.
 In the Bucket type section, ensure that General purpose is selected.
-Press enter or click to view image in full size
+
 
 Note: S3 Buckets Must Be Globally Unique
 
@@ -39,14 +39,12 @@ Your bucket name must be unique across all existing bucket names in all of AWS. 
 
 Example: automated-receipts-yourusername
 
-Press enter or click to view image in full size
-
 ❗Important: Keep all default settings for the bucket configuration
 
 Finalize Bucket Creation
 Finally, scroll to the bottom of the page and click the Create bucket button. AWS will validate your settings and create the bucket, after which you will be redirected to the S3 console where your new bucket will appear in the list.
 
-Press enter or click to view image in full size
+
 
 Create an “incoming” Folder (Recommended)
 To keep files organized by their processing status, we recommend creating a dedicated folder for new receipt uploads.
@@ -54,14 +52,14 @@ To keep files organized by their processing status, we recommend creating a dedi
 Navigate into your bucket: From the S3 console, click on the name of the bucket you just created.
 Initiate folder creation: Click the Create folder button.
 Name the folder: In the Folder name field, enter incoming and then click Create folder at the bottom of the page.
-Press enter or click to view image in full size
 
-Role of the S3 Bucket
+
+## Role of the S3 Bucket
 The Amazon S3 bucket is the foundation of the workflow, serving a dual role as both the trigger for processing and the long-term archive for all receipts.
 
 The process begins when a user or automated system uploads a receipt image or PDF into the incoming/ folder. This upload event automatically triggers an AWS Lambda function, which initiates the data extraction. Throughout this process, the original receipt file is securely preserved in the bucket, creating a permanent and auditable record for compliance and verification purposes.
 
-#2 Create a DynamoDB Table for Receipt Data
+# 2. Create a DynamoDB Table for Receipt Data
 Once the system extracts structured data from a receipt, it requires a durable and high-performance database to store that information. For this purpose, we will use Amazon DynamoDB.
 
 Why DynamoDB?
@@ -72,11 +70,11 @@ Scalability: It scales seamlessly to handle virtually any amount of data or traf
 Performance: It delivers consistent, single-digit millisecond latency, which is essential for a responsive system.
 Steps
 Navigate to DynamoDB in the AWS Console
-Press enter or click to view image in full size
 
-Create the Table
+
+## Create the Table
 Click the Create table button to open the creation interface. This table will store all the structured data extracted from your receipts.
-Press enter or click to view image in full size
+
 
 1. Table name
 
@@ -91,29 +89,29 @@ Note: The partition key is a unique identifier for each receipt stored in the ta
 Enter date for the key name and select String as the key type.
 Note: Adding a sort key allows for more powerful queries, such as retrieving all receipts within a specific date range. We’ll use a YYYY-MM-DD format to ensure it sorts correctly.
 
-Press enter or click to view image in full size
+
 
 Review and Create Table
 Accept default settings: You can leave all other settings below the sort key with their default values.
 Create the table: Scroll to the bottom of the page and click the Create table button.
 AWS will now provision your DynamoDB table, which is typically ready in under a minute. You will be redirected to the tables dashboard, where you’ll see your new Receipts table in the list.
 
-Press enter or click to view image in full size
 
-Press enter or click to view image in full size
+
+
 
 Understanding the Initial Table State
 After creating the Receipts table, you will see it listed in the DynamoDB console with a status of Active and showing 0 items. This is the correct and expected state.
 
 The table will only be populated with data after the complete processing workflow is triggered. An empty table simply confirms that it has been configured correctly and is ready to receive data once the system is running.
 
-Press enter or click to view image in full size
+
 
 Data Model for Receipt Information
 
 The DynamoDB table will store the following attributes for each receipt:
 
-Press enter or click to view image in full size
+
 
 The DynamoDB table serves as the structured data repository for all processed receipts:
 
@@ -122,34 +120,29 @@ The extracted data is formatted according to the data model
 The Lambda function writes this data to the DynamoDB table
 Applications and reports can query the table for receipt information
 The original receipt images remain in S3, linked via the receipt_url attribute
-3.3 Notification Setup: Configuring Amazon SES
+# Notification Setup: Configuring Amazon SES
 Steps to be Performed
 Setting up SES for Email Notifications.
 Verifying the Email Address.
 Configuring SES for Receipt Notifications.
-#1 Setting up SES for Email Notifications
+## 1. Setting up SES for Email Notifications
 After receipts are processed, users need to be notified about the extracted information and any actions required.
 
 Amazon Simple Email Service (SES) provides a reliable, cost-effective email solution for sending these notifications. Setting up SES ensures that appropriate stakeholders are informed when new receipts are processed.
 
 Navigate to Amazon SES in the AWS Console
-Press enter or click to view image in full size
 
-Access Identity Management
+## Access Identity Management
 In the SES console, go to Configuration > Identities
 This section is where you’ll verify email addresses or domains
-Press enter or click to view image in full size
 
 Begin Identity Creation
 Click the Create identity button
 This starts the process of verifying an email address or domain for sending
-Press enter or click to view image in full size
 
 Select Identity Type
 Select Email address option
 Note: For production systems, you might want to verify an entire domain instead
-
-Press enter or click to view image in full size
 
 Configure Sender Email
 Enter your sender email address (the address you’ll send notifications from)
@@ -158,26 +151,25 @@ Example: receipts-noreply@yourcompany.com
 Complete Initial Setup
 Click Create identity
 AWS will process your request and prepare verification
-Press enter or click to view image in full size
 
-#2 Verifying the Email Address
+
+## 2. Verifying the Email Address
 After creating the identity, navigate to your Gmail inbox and perform the verification steps as provided below:
 
 Verify Sender Email
 AWS will send a verification email to the address you provided
 This verification ensures you own the email address
 Check both inbox and spam/junk folders for this email
-Press enter or click to view image in full size
+
 
 Complete Verification
 Go to the inbox of that email address and find the AWS verification email
 Click the verification link in that email
-Press enter or click to view image in full size
+
 
 You’ll be redirected to a confirmation page in AWS
-Press enter or click to view image in full size
 
-#3 Configuring SES for Receipt Notifications
+## 3. Configuring SES for Receipt Notifications
 ❗Important: Email Verification Options
 
 Option 1: Use the same email for sender and recipient (simplest approach)
@@ -186,7 +178,7 @@ This is recommended for tutorial and testing purposes
 Option 2: Use different sender and recipient emails
 Repeat steps 1 and 2 for each recipient email address
 Remember: While in SES sandbox mode, both sender and recipient emails must be verified
-Press enter or click to view image in full size
+
 
 The SES configuration enables the notification component of the receipt processing workflow:
 
@@ -194,39 +186,37 @@ After the Lambda function processes a receipt and stores data in DynamoDB
 It uses SES to send an email notification with receipt details
 The notification includes key information like vendor, date, amount, and a link to the original receipt
 Users receive timely updates without needing to check the system manually
-3.4 Processing Setup: Creating a Lambda function
+# Processing Setup: Creating a Lambda function
 Steps to be Performed
 Create an IAM role for AWS Lambda.
 Create a Lambda Function.
 Add the Lambda function Code.
 Understand the Lambda function Code.
-#1 Create an IAM role
+## 1. Create an IAM role
 Lambda functions need permission to access other AWS services.
 
 Creating a dedicated IAM role follows security best practices by explicitly defining what actions your Lambda function can perform. To do this —
 
 Navigate to IAM in the AWS Console
-Press enter or click to view image in full size
 
 Initiate Role Creation
 Click “Roles” in the left navigation pane
 Click “Create role” button to start the process
-Press enter or click to view image in full size
 
 Select Trusted Entity
 Select “AWS service” as the trusted entity type
 This specifies which AWS service can assume this role
-Press enter or click to view image in full size
+
 
 Specify Service Use Case
 Choose “Lambda” as the service that will use this role
 This allows Lambda functions to assume this role at runtime
-Press enter or click to view image in full size
+
 
 Configure Permissions
 Click “Next: Permissions” to continue
 On the Permissions policies page, you’ll attach policies that define what the role can do
-Press enter or click to view image in full size
+
 
 Attach Required Policies
 In the search box, search for and select these policies:
@@ -235,23 +225,23 @@ AmazonTextractFullAccess: Enables document analysis with Textract
 AmazonDynamoDBFullAccess: Permits writing extracted data to DynamoDB
 AmazonSESFullAccess: Enables sending email notifications
 AWSLambdaBasicExecutionRole: Allows Lambda to write logs to CloudWatch
-Press enter or click to view image in full size
+
 
 Review and Name Role
 Click “Next”
 Role name: “ReceiptProcessingLambdaRole”
 Description (optional): “Allows Lambda functions to process receipts using S3, Textract, DynamoDB, and SES”
-Press enter or click to view image in full size
+
 
 Create the Role
 Review the role configuration
 Click “Create role” to finalize
-Press enter or click to view image in full size
+
 
 Validate Role Creation
 Verify the role appears in the IAM roles list
 Click on the role name to view its details and ensure all policies are attached correctly
-Press enter or click to view image in full size
+
 
 The IAM role connects all components of the receipt processing system:
 
@@ -262,60 +252,55 @@ Send those files to Textract for analysis
 Write extracted data to DynamoDB
 Send notification emails via SES
 Write logs to CloudWatch for troubleshooting
-# 2. Create a Lambda Function
+## 2. Create a Lambda Function
 The Lambda function serves as the central processing engine for our receipt processing system.
 
-Get Akuphe Dieudonne’s stories in your inbox
-Join Medium for free to get updates from this writer.
-
-Enter your email
-Subscribe
 This serverless function is triggered automatically when a new receipt is uploaded to S3, coordinates the extraction of data using Textract, stores the structured information in DynamoDB, and sends notifications via SES.
 
 Navigate to Lambda in the AWS Console
-Press enter or click to view image in full size
+
 
 Begin Function Creation
 Click “Create function” to start the process
 This opens the function creation wizard
-Press enter or click to view image in full size
+
 
 Select Creation Method
 Select “Author from scratch”
 This allows you to create a custom function from the beginning
 Configure Basic Settings
 Function name: Enter “ReceiptProcessor”
-Runtime: Select “Python 3.9” from the dropdown
+Runtime: Select “Python 3.10” from the dropdown
 Architecture: Leave as default (x86_64)
-Press enter or click to view image in full size
+
 
 Set Permissions
 Under “Permissions” expand “Change default execution role”
 Select “Use an existing role”
 From the dropdown, choose “ReceiptProcessingLambdaRole”
-Press enter or click to view image in full size
+
 
 Create the Function
 Review your settings
 Click “Create function”
 AWS will provision your Lambda function (this takes just a few seconds)
-Press enter or click to view image in full size
+
 
 Adjust Function Timeout
 Navigate to the “Configuration” tab
 Select “General configuration”
 Click “Edit”
-Press enter or click to view image in full size
+
 
 Change the Timeout from the default 3 seconds to 3 minutes (180 seconds)
 This extended timeout is necessary because Textract processing can take time for complex receipts
 Click “Save”
-Press enter or click to view image in full size
+
 
 Configure Environment Variables
 Still in the “Configuration” tab, select “Environment variables”
 Click “Edit”
-Press enter or click to view image in full size
+
 
 Add the following key-value pairs:
 Key: DYNAMODB_TABLE, Value: Receipts
@@ -323,13 +308,10 @@ Key: SES_SENDER_EMAIL, Value: your-verified-email@example.com (use the email you
 Key: SES_RECIPIENT_EMAIL, Value: recipient-email@example.com (use the recipient email you verified)
 Note: For detailed information about these environment variables and their usage in the Lambda function, please refer to the Lambda Environment Variables table given below.
 Click Save.
-Press enter or click to view image in full size
 
 Lambda Environment Variables:
 
 Environment variables provide configuration without code changes:
-
-Press enter or click to view image in full size
 
 The Lambda function forms the core of the receipt processing workflow:
 
@@ -340,12 +322,13 @@ Lambda processes and structures the extracted data
 Lambda writes the structured data to DynamoDB
 Lambda sends a notification email via SES
 Lambda moves the original receipt to the “processed” folder
-# 3. Add the Lambda function Code
+
+## 3. Add the Lambda function Code
 Access the Code Editor
 In the Lambda console, navigate to your “ReceiptProcessor” function
 Scroll down to the code source section where you’ll see the code editor
 The default Lambda function contains a simple “Hello World” example
-Press enter or click to view image in full size
+
 
 Replace the default code with the provided Python code
 Delete the existing code in the editor
@@ -362,35 +345,34 @@ For our receipt processing system to operate automatically, we need to establish
 Amazon S3 offers event notifications that can detect new file uploads and trigger specific actions. This integration creates the vital connection between file upload (input) and processing (execution).
 
 Navigate to S3 in the AWS Console
-Press enter or click to view image in full size
 
 Access Your Bucket
 From the list of buckets, select the receipt storage bucket you created earlier
 This opens the bucket management interface
-Press enter or click to view image in full size
+
 
 Access Properties Settings
 Navigate to the “Properties” tab at the top of the bucket management interface
 This tab contains various bucket configurations
-Press enter or click to view image in full size
+
 
 Create Event Notification
 Scroll down to the “Event Notifications” section
 Click “Create event notification” to begin configuration
 This opens the event notification creation form
-Press enter or click to view image in full size
+
 
 Configure Event Details
 Name: “ReceiptUploadEvent”
 Prefix (optional): “incoming/” (if using folders)
 Suffix (optional): Leave blank or add “.pdf,.jpg,.jpeg,.png”
-Press enter or click to view image in full size
+
 
 Event types: Check “All object create events”
 This includes put, post, copy, and multipart upload completions
 Keep the rest of the boxes unchecked
 Ensures any method of adding files triggers the process
-Press enter or click to view image in full size
+
 
 Destination: Select “Lambda Function”
 Lambda function: Select “ReceiptProcessor”
@@ -399,7 +381,7 @@ Save the Configuration
 Review all settings to ensure they match your requirements
 Click “Save” to activate the event notification
 AWS will validate and create the notification configuration
-Press enter or click to view image in full size
+
 
 The S3 event notification creates the automated workflow for receipt processing:
 
@@ -414,52 +396,41 @@ This point explains how to verify your receipt processing system works correctly
 ## Step 1: Upload a Test Receipt
 
 Navigate to your S3 bucket in the AWS Console
-Press enter or click to view image in full size
+
 
 Upload a receipt from this folder: Receipts (to the “incoming” folder if you created one)
-Press enter or click to view image in full size
+
 
 Wait 10–15 seconds for processing to complete
 ## Step 2: Monitor the Lambda Execution
 
 Go to Lambda > Functions > ReceiptProcessor
 Select the “Monitor” tab
-Press enter or click to view image in full size
+
 
 Check that your function was recently invoked
 📝Note: It may take a few minutes for the Lambda execution to appear in the monitoring dashboard. If you don’t see your execution immediately, wait 2–3 minutes and refresh the page.
 
 ❗Important: Uploading a receipt in Step 1 is mandatory to trigger the Lambda function execution.
 
-Press enter or click to view image in full size
-
-Press enter or click to view image in full size
-
 Click “View logs in CloudWatch” for detailed execution logs
-Press enter or click to view image in full size
 
 Log entries showing processing steps
-Press enter or click to view image in full size
 
 ## Step 3: Verify Data in DynamoDB
 
 Go to DynamoDB > Tables > Receipts
 Select the “Items” tab
-Press enter or click to view image in full size
 
 Look for your recently processed receipt
 Check:
 
 Receipt data is stored correctly
 Key fields (vendor, date, total amount) are accurate
-Press enter or click to view image in full size
 
 ## Step 4: Check Email Notifications
 
 Open your configured recipient email account
-Press enter or click to view image in full size
-
-Press enter or click to view image in full size
 
 Of course. Here is a more structured and descriptive version of your project enhancement list.
 Project Enhancements
