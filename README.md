@@ -1,6 +1,6 @@
 # Automated-Receipt-Tracker using AWS
 ### Project Overview
-
+<pre>
 This project provides an automated solution for processing receipts using Amazon Web Services (AWS). Traditional manual receipt handling is often time-consuming, prone to errors, and does not scale effectively.
 
 This system addresses these challenges by automatically extracting structured data from receipts. The data is then stored efficiently in a centralized location, streamlining record-keeping and simplifying auditing processes.
@@ -447,3 +447,4 @@ Set Up Error Notifications Use Amazon SNS (Simple Notification Service) to send 
 Optimize Image Storage Add a step to your Lambda function to compress or resize receipt images before they are archived. This can significantly reduce long-term S3 storage costs.
 Security
 Introduce User Authentication Integrate Amazon Cognito to manage user accounts. This adds a secure sign-up and sign-in layer to your web interface, ensuring that only authorized users can upload and view receipts.
+</pre>
