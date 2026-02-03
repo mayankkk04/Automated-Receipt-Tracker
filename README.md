@@ -17,3 +17,12 @@ AWS Lambda (Compute Layer): Provides the serverless compute logic that automates
 Amazon Textract (Processing Layer): Performs AI-powered OCR to automatically extract structured data, such as vendor names, dates, and line items, from the receipts.
 Amazon DynamoDB (Database Layer): A NoSQL database used to store the extracted receipt data in a structured, queryable format for long-term record-keeping.
 Amazon SES (Notification System): The Simple Email Service is used to send automated email alerts to users, confirming successful receipt processing and providing key details.
+
+# 1 Set Up S3 Buckets for Receipt Storage and Archiving
+The receipt processing system needs a central, secure location to store both the original receipt files and track their processing status.
+
+Amazon S3 (Simple Storage Service) provides the ideal solution with its durability, availability, and security features. This bucket will serve as both the entry point for new receipts and the archive for processed documents.
+
+Steps
+Sign in to the AWS Management Console
+Navigate to the Amazon S3 service
