@@ -350,3 +350,129 @@ Press enter or click to view image in full size
 Replace the default code with the provided Python code
 Delete the existing code in the editor
 Copy and paste the Python code provided in this repository
+
+# Integration and Testing
+Steps to be Performed
+Setup S3 Event Notification Trigger.
+Test the Project Execution.
+Project Improvement Ideas.
+## 1. Setup S3 Event Notification Trigger
+For our receipt processing system to operate automatically, we need to establish a trigger that will invoke our Lambda function whenever a new receipt is uploaded.
+
+Amazon S3 offers event notifications that can detect new file uploads and trigger specific actions. This integration creates the vital connection between file upload (input) and processing (execution).
+
+Navigate to S3 in the AWS Console
+Press enter or click to view image in full size
+
+Access Your Bucket
+From the list of buckets, select the receipt storage bucket you created earlier
+This opens the bucket management interface
+Press enter or click to view image in full size
+
+Access Properties Settings
+Navigate to the “Properties” tab at the top of the bucket management interface
+This tab contains various bucket configurations
+Press enter or click to view image in full size
+
+Create Event Notification
+Scroll down to the “Event Notifications” section
+Click “Create event notification” to begin configuration
+This opens the event notification creation form
+Press enter or click to view image in full size
+
+Configure Event Details
+Name: “ReceiptUploadEvent”
+Prefix (optional): “incoming/” (if using folders)
+Suffix (optional): Leave blank or add “.pdf,.jpg,.jpeg,.png”
+Press enter or click to view image in full size
+
+Event types: Check “All object create events”
+This includes put, post, copy, and multipart upload completions
+Keep the rest of the boxes unchecked
+Ensures any method of adding files triggers the process
+Press enter or click to view image in full size
+
+Destination: Select “Lambda Function”
+Lambda function: Select “ReceiptProcessor”
+This connects the S3 event to your processing function
+Save the Configuration
+Review all settings to ensure they match your requirements
+Click “Save” to activate the event notification
+AWS will validate and create the notification configuration
+Press enter or click to view image in full size
+
+The S3 event notification creates the automated workflow for receipt processing:
+
+When a receipt image is uploaded to S3, it generates an event
+The event notification system detects this upload event
+If the file matches the configured prefix and suffix filters, S3 invokes the Lambda function
+The Lambda function receives event data including the bucket name and file key
+Processing begins automatically without any manual intervention
+## 2. Test the Project Execution
+This point explains how to verify your receipt processing system works correctly end-to-end.
+
+## Step 1: Upload a Test Receipt
+
+Navigate to your S3 bucket in the AWS Console
+Press enter or click to view image in full size
+
+Upload a receipt from this folder: Receipts (to the “incoming” folder if you created one)
+Press enter or click to view image in full size
+
+Wait 10–15 seconds for processing to complete
+## Step 2: Monitor the Lambda Execution
+
+Go to Lambda > Functions > ReceiptProcessor
+Select the “Monitor” tab
+Press enter or click to view image in full size
+
+Check that your function was recently invoked
+📝Note: It may take a few minutes for the Lambda execution to appear in the monitoring dashboard. If you don’t see your execution immediately, wait 2–3 minutes and refresh the page.
+
+❗Important: Uploading a receipt in Step 1 is mandatory to trigger the Lambda function execution.
+
+Press enter or click to view image in full size
+
+Press enter or click to view image in full size
+
+Click “View logs in CloudWatch” for detailed execution logs
+Press enter or click to view image in full size
+
+Log entries showing processing steps
+Press enter or click to view image in full size
+
+## Step 3: Verify Data in DynamoDB
+
+Go to DynamoDB > Tables > Receipts
+Select the “Items” tab
+Press enter or click to view image in full size
+
+Look for your recently processed receipt
+Check:
+
+Receipt data is stored correctly
+Key fields (vendor, date, total amount) are accurate
+Press enter or click to view image in full size
+
+## Step 4: Check Email Notifications
+
+Open your configured recipient email account
+Press enter or click to view image in full size
+
+Press enter or click to view image in full size
+
+Of course. Here is a more structured and descriptive version of your project enhancement list.
+Project Enhancements
+Here are several ways to expand upon the core functionality of your receipt processing system, grouped by theme.
+
+User Interface & Experience
+Implement a Web Upload Form Host a static HTML page on Amazon S3 with a simple form, allowing users to upload receipts directly through a browser instead of just using the S3 console.
+Track Processing Status Add a status attribute to your DynamoDB items. Update it throughout the workflow with values like Pending, Processing, Success, or Failed to provide clear feedback on a receipt's state.
+Core Features & Data
+Add Expense Categorization Modify the DynamoDB table and Lambda function to include an expense category field. This allows for better organization of spending into buckets like "Food," "Travel," or "Office Supplies."
+Generate Monthly Reports Create a new Lambda function that runs on a schedule (e.g., using Amazon EventBridge). This function can query DynamoDB for the month’s expenses, generate a summary, and email it to a user via SES.
+Operations & Efficiency
+Set Up Error Notifications Use Amazon SNS (Simple Notification Service) to send an immediate alert to an administrator if the processing Lambda function encounters an error. This enables faster troubleshooting.
+Optimize Image Storage Add a step to your Lambda function to compress or resize receipt images before they are archived. This can significantly reduce long-term S3 storage costs.
+Security
+Introduce User Authentication Integrate Amazon Cognito to manage user accounts. This adds a secure sign-up and sign-in layer to your web interface, ensuring that only authorized users can upload and view receipts.
