@@ -7,9 +7,7 @@
 This project provides an automated solution for processing receipts using Amazon Web Services (AWS). Traditional manual receipt handling is often time-consuming, prone to errors, and does not scale effectively.
   
 This system addresses these challenges by automatically extracting structured data from receipts. The data is then stored efficiently in a centralized location, streamlining record-keeping and simplifying auditing processes.
-  
-Excellent, this clearly outlines the components. Let’s refine this to better explain how the components interact.
-  
+   
 Here are two improved versions.
   
 Architecture
